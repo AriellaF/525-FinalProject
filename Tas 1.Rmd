@@ -1,6 +1,6 @@
 ---
 title: "Task 1"
-author: "Ariella Fuzaylov"
+author: "Ariella Fuzaylov and Candice Djorno"
 date: "4/10/2021"
 output: pdf_document
 ---
@@ -13,38 +13,38 @@ library(srvyr)
 ```
 
 
-
 ```{r load data}
 Employee_A_data=read.csv("Employee_A_data.csv", header=TRUE)
 ```
 
 # Given
 
-- $N = 40,041$
-- $n = 6,000$
-- SRS of $6,000$ reviews
+- Population of $N = 40,041$ reviews
+- Employee A took an SRS of $n = 6,000$ reviews
 
 ## Subtask 1:
 
 ### Estimate average rating
+
+Under SRSWOR, the sample mean $\bar{y} = \frac{1}{n}\sum_{i\in S}{y_i}$ is an unbiased estimator for the population mean $\hat{\mu}$.
+
 ```{r}
 N = 40041
 n= 6000
-mu<-sum(Employee_A_data$Rating)/n
-
+y_bar<-sum(Employee_A_data$Rating)/n
 ```
-$\hat{\mu}=$ `r mu`
+
+Thus, the estimated average rating is $\hat{\mu}=$ `r y_bar`.
 
 ## Confidence interval
 ```{r}
 srs_design = svydesign(id=~1,data=Employee_A_data, fpc=rep(N,n))
-
 svymean(x=~Rating,design = srs_design)
 conf= confint(svymean(x=~Rating,design = srs_design))
 conf
 ```
 
-EXPLAIN
+A 95% confidence interval is [`r conf[1]`, `r conf[2]`].
 
 ## Subtask 2
 
@@ -59,16 +59,23 @@ Employee_A_data%>% group_by(Branch)%>%
 
 ```
 
+The estimated average rating for California is 4.396533, for HongKong is 4.213475, for Paris is 3.976963.
+
 ### Hypothesis Test
- test
+ 
+We perform a hypothesis test to determine whether there is evidence that any of the ratings are statistically significantly different from each other in the population.
+
+$H_0 : {\mu}_{california}={\mu}_{hongkong}={\mu}_{paris}$
+
+$H_1 : {\mu}_{california}\neq{\mu}_{hongkong}$ or ${\mu}_{california}\neq{\mu}_{paris}$ or 
+${\mu}_{hongkong}\neq{\mu}_{paris}$ (i.e. the means are not all equal).
+
+We perform an ANOVA.
 
 ```{r}
 rating_aov = aov(Rating~Branch,data=Employee_A_data)
 summary(rating_aov)
-
-
 ```
 
-$H_0 :$ ${\mu}_{california}={\mu}_{hongkong}={\mu}_{paris}$
+We obtain $p-value < 2e-16$ so $p-value < \alpha$. Therefore, we reject the null hypothesis and we conclude that there is evidence that Employee A could achieve more precision for these estimates.
 
-$H_1 :$ ${\mu}_{california}\neq{\mu}_{hongkong}$ or ${\mu}_{california}\neq{\mu}_{paris}$ or ${\mu}_{hongkong}\neq{\mu}_{paris}$
