@@ -63,11 +63,12 @@ Employee_A_data%>% group_by(Branch)%>%
  test
 
 ```{r}
-
+rating_aov = aov(Rating~Branch,data=Employee_A_data)
+summary(rating_aov)
 
 
 ```
 
 $H_0 :$ ${\mu}_{california}={\mu}_{hongkong}={\mu}_{paris}$
 
-$H_1 :$ ${\mu}_{california}\neq{\mu}_{hongkong}={\mu}_{paris}$
+$H_1 :$ ${\mu}_{california}\neq{\mu}_{hongkong}$ or ${\mu}_{california}\neq{\mu}_{paris}$ or ${\mu}_{hongkong}\neq{\mu}_{paris}$
