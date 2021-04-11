@@ -51,6 +51,9 @@ A 95% confidence interval is [`r conf[1]`, `r conf[2]`].
 ### Calculate Mean by Branch
 
 ```{r test}
+Employee_A_data%>%
+  summarise(n= n(), Mean= mean(Rating),Var=sd(Rating)^2)
+
 Employee_A_data%>% group_by(Branch)%>%
   summarise(n= n(), Mean= mean(Rating),StD=sd(Rating))
 

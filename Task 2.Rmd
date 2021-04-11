@@ -1,0 +1,89 @@
+---
+title: "Task 2"
+author: "Ariella Fuzaylov"
+date: "4/11/2021"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+library(ggplot2)
+library(tidyverse)
+library(survey)
+library(srvyr)
+```
+
+```{r load data}
+Employee_A_data=read.csv("Employee_A_data.csv", header=TRUE)
+```
+
+# Given
+
+- Population of $N = 40,041$ reviews
+- Employee A took an SRS of $n = 6,000$ reviews
+
+## Subtask 1:
+
+```{r test}
+Employee_A_data%>%
+  summarise(n= n(), Mean= mean(Rating),Var=var(Rating))
+
+strata.b<-Employee_A_data%>% group_by(Branch)%>%
+  summarise(ni= n(), Mean= mean(Rating),Var=var(Rating))
+strata.b
+
+Employee_A_data%>% group_by(continent)%>%summarise(ni= n(), Mean= mean(Rating),Var=sd(Rating)^2)
+
+```
+
+### Hypothesis Test
+ 
+We perform a hypothesis test to determine whether there is evidence that any of the ratings are statistically significantly different from each other in the population.
+
+$H_0 : {\mu}_{california}={\mu}_{hongkong}={\mu}_{paris}$
+
+$H_1 : {\mu}_{california}\neq{\mu}_{hongkong}$ or ${\mu}_{california}\neq{\mu}_{paris}$ or 
+${\mu}_{hongkong}\neq{\mu}_{paris}$ (i.e. the means are not all equal).
+
+We perform an ANOVA.
+
+```{r}
+rating_aov.c = aov(Rating~continent,data=Employee_A_data)
+summary(rating_aov.c)
+
+rating_aov.b = aov(Rating~Branch,data=Employee_A_data)
+summary(rating_aov.b)
+```
+
+"Remember, stratification is most efficient when the stratum means differ widely;
+then the between sum of squares is large, and the variability within strata will be
+smaller. Consequently, when constructing strata we want the strata means to be as
+different as possible" pg 92 not wu
+
+WE SHOULD FIX THIS
+
+Reject both null hypotheses => means different
+
+Stratification by Continent results in very similar sample means for each strata.
+
+Chose stratification by Branch because this results in the largest difference between the sample means of each strata.
+
+
+## Subtask 2
+
+Aim: optimally allocate sample sizes for a stratified sample of size 6,000.
+
+Idea: use Neyman allocation with equal costs. 
+
+Proportional allocation assumes that the within stratum variance of a stratum is proportional to the size of the stratum. Meaning the larger the stratum the larger the within stratum variance. Therefore, to capture this variance accurately we take a larger sample from a larger stratum. From Employee A's SRS of 6000 reviews we see that the mid size stratum has the highest variance, therefore we use Neyman allocation with allocates sample sizes proportional to the over all stratum times the stratum variance. This allocation will capture more of the variance in the sample.
+
+```{r}
+n=6000
+strata.b<-mutate(strata.b, Nh=c(19406,9619,13629))
+denom=sum(strata.b$Nh*sqrt(strata.b$Var))
+denom
+
+numer=strata.b$Nh*sqrt(strata.b$Var)
+nh=numer*n/denom
+strata.b<-strata.b%>%mutate(nh=round(nh))
+strata.b
+```
