@@ -8,6 +8,8 @@ output: pdf_document
 ```{r setup, include=FALSE}
 library(ggplot2)
 library(tidyverse)
+library(sampling)
+
 ```
 
 
@@ -15,11 +17,19 @@ library(tidyverse)
 ```{r load data}
 Employee.B.Branch=read.csv("Employee_B_by_Branch.csv", header=TRUE)
 Employee.B.overall=read.csv("Employee_B_overall.csv", header=TRUE)
-Employee.B.probs=read.csv("Employee_B_probs.csv", header=FALSE)
+Employee.B.probs=as.matrix(read.csv("Employee_B_probs.csv", header=FALSE))
 ```
 
 ```{r test}
-Employee.B.Branch
-Employee.B.overall
+head(Employee.B.Branch)
+head(Employee.B.overall)
+
+month<-Employee.B.overall$Year_Month
+
+##add col and row names for human readability
+
+colnames(Employee.B.probs)<-month
+rownames(Employee.B.probs)<-month
+
 Employee.B.probs
 ```
