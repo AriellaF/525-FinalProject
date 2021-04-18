@@ -110,4 +110,10 @@ HongKong estimated average: 4.164182
 Paris estimated average: 4.006737
 Result of ANOVA: the means are not all equal
 
+Let $\bar{y}_A$ be the estimated average for Employee A and $\bar{y}_B$ the estimated average for Employee B.
+
+We observe that $SE(\bar{y}_A) < SE(\bar{y}_B)$ so $Var(\bar{y}_A) < Var(\bar{y}_B)$, therefore the estimate found by Employee A is more efficient than the estimate found by Employee B. Thus, the result found by Employee A provides the best answer. 
+Because Employee B used months as clusters, this means people who went to the park in similar wheather would be in the same cluster. This would lead to homogeneity inside a single cluster, making cluster-sampling perform worse than SRSWOR.
+
+
 
