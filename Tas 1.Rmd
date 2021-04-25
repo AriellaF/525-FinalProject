@@ -32,6 +32,7 @@ Under SRSWOR, the sample mean $\bar{y} = \frac{1}{n}\sum_{i\in S}{y_i}$ is an un
 N = 40041
 n= 6000
 y_bar<-sum(Employee_A_data$Rating)/n
+y_bar
 ```
 
 Thus, the estimated average rating is $\hat{\mu}=$ `r y_bar`.

@@ -1,13 +1,13 @@
 ---
 title: "Task 2"
-author: "Ariella Fuzaylov"
+author: "Ariella Fuzaylov and Candice Djorno"
 date: "4/11/2021"
 output: pdf_document
 ---
 
 ```{r setup, include=FALSE}
 library(ggplot2)
-library(tidyverse)
+#library(tidyverse)
 library(survey)
 library(srvyr)
 ```
@@ -25,7 +25,8 @@ Employee_A_data=read.csv("Employee_A_data.csv", header=TRUE)
 
 ```{r test}
 knitr::kable(Employee_A_data%>%
-  summarise(n= n(), Mean= mean(Rating),Var=var(Rating)), caption = "Rating Summary Statistics")
+  summarise(n= n(), Mean= mean(Rating),Var=var(Rating)), 
+  caption = "Rating Summary Statistics")
 
 strata.b<-Employee_A_data%>% group_by(Branch)%>%
   summarise(ni= n(), Mean= mean(Rating),Var=var(Rating))
@@ -37,7 +38,7 @@ knitr::kable(Employee_A_data%>% group_by(continent)%>%summarise(ni= n(), Mean= m
 
 ### Hypothesis Test
  
-We perform a hypothesis test to determine whether there is evidence that any of the ratings are statistically significantly different from each other in the population.
+We perform a first hypothesis test to determine whether there is evidence that any of the ratings are statistically significantly different from each other in the population, accross the branches.
 
 $H_0 : {\mu}_{california}={\mu}_{hongkong}={\mu}_{paris}$
 
@@ -45,28 +46,31 @@ $H_1 : {\mu}_{california}\neq{\mu}_{hongkong}$ or ${\mu}_{california}\neq{\mu}_{
 ${\mu}_{hongkong}\neq{\mu}_{paris}$ (i.e. the means are not all equal).
 
 We perform an ANOVA.
-
 ```{r}
-rating_aov.c = aov(Rating~continent,data=Employee_A_data)
-summary(rating_aov.c)
-
 rating_aov.b = aov(Rating~Branch,data=Employee_A_data)
 summary(rating_aov.b)
 ```
 
-"Remember, stratification is most efficient when the stratum means differ widely;
-then the between sum of squares is large, and the variability within strata will be
-smaller. Consequently, when constructing strata we want the strata means to be as
-different as possible" pg 92 not wu
+We obtain $p-value < 2e-16$ so $p-value < \alpha$. Therefore, we reject the null hypothesis and we conclude that there is evidence that the means are different accross the branches.
 
-WE SHOULD FIX THIS
+We perform a second hypothesis test to determine whether there is evidence that any of the ratings are statistically significantly different from each other in the population, accross the continents.
 
-Reject both null hypotheses => means different
+$H_0 : {\mu}_{africa}={\mu}_{americas}={\mu}_{asia}={\mu}_{europe}={\mu}_{oceania}$
+$H_1$ : The means are not all equal.
 
-Stratification by Continent results in very similar sample means for each strata.
+```{r}
+rating_aov.c = aov(Rating~continent,data=Employee_A_data)
+summary(rating_aov.c)
+```
 
-Chose stratification by Branch because this results in the largest difference between the sample means of each strata.
+Again, we obtain $p-value < 2e-16$ so $p-value < \alpha$. Therefore, we reject the null hypothesis and we conclude that there is evidence that the means are different accross the continents.
 
+From our book Sampling: Design and Analysis, "stratification is most efficient when the stratum means differ widely; then the between sum of squares is large, and the variability within strata will be smaller. Consequently, when constructing strata we want the strata means to be as different as possible." From both ANOVA tests, we conclude that the means accross branches and the means accross continents are different.
+
+However, when we look at Tables 2 and 3, we observe that the means when stratifying by Continent are more similar to each other than the means when stratifying by Branch. 
+The range of means by Branch is $4.396533-3.976963=0.41957$ and the range of means by Continent is $4.321177-4.040068=0.281109$, so the stratum means differ more when stratifying by Branch than by Continent.
+
+So, we choose stratification by Branch because this results in the largest difference between the sample means in each stratum. Therefore, the best variable to use from the simple random sampled data from Task 1 is Branch. 
 
 ## Subtask 2
 
@@ -74,7 +78,12 @@ Aim: optimally allocate sample sizes for a stratified sample of size 6,000.
 
 Idea: use Neyman allocation with equal costs. 
 
-Proportional allocation assumes that the within stratum variance of a stratum is proportional to the size of the stratum. Meaning the larger the stratum the larger the within stratum variance. Therefore, to capture this variance accurately we take a larger sample from a larger stratum. From Employee A's SRS of 6000 reviews we see that the mid size stratum has the highest variance, therefore we use Neyman allocation with allocates sample sizes proportional to the over all stratum times the stratum variance. This allocation will capture more of the variance in the sample.
+Proportional allocation assumes that the within stratum variance of a stratum is proportional to the size of the stratum. Meaning the larger the stratum the larger the within stratum variance. Therefore, to capture this variance accurately we take a larger sample from a larger stratum. From Employee A's SRS of 6000 reviews we see that the mid size stratum has the highest variance, therefore we use Neyman allocation with allocates sample sizes proportional to the overall stratum times the stratum variance. This allocation will capture more of the variance in the sample.
+
+Under Neyman allocation, we have
+$$
+n_h = \frac{N_h\sqrt{S_h^2}}{\sum_{i=1}^{n} N_i\sqrt{S_i^2}}n
+$$
 
 ```{r}
 n=6000
@@ -87,3 +96,5 @@ nh=numer*n/denom
 strata.b<-strata.b%>%mutate(nh=round(nh))
 knitr::kable(strata.b, caption= "Ratings Summarized by Strata")
 ```
+
+Estimates for the optimal sample sizes to use for each stratum according to the stratifying variable (Branch) are given in Table 4, column named "nh".

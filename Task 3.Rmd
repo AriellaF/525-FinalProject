@@ -63,10 +63,12 @@ A 95% confidence interval is [`r conf[1]`, `r conf[2]`].
 
 ```{r }
 knitr::kable(Employee.B.Branch%>%
-  summarise(n= n(), Mean= mean(Total_of_Ratings),Var=sd(Total_of_Ratings)^2),caption = "Rating Summary Statistics")
+  summarise(n= n(), Mean= mean(Total_of_Ratings),Var=sd(Total_of_Ratings)^2),
+  caption = "Rating Summary Statistics")
 
 knitr::kable(Employee.B.Branch%>% group_by(Branch)%>%
-  summarise(n= n(), Mean= mean(Total_of_Ratings),StD=sd(Total_of_Ratings)), caption = "Rating Summarised by Branch")
+  summarise(n= n(), Mean= mean(Total_of_Ratings),StD=sd(Total_of_Ratings)), 
+  caption = "Rating Summarised by Branch")
 ```
 
 The estimated average rating for California is 4.391302, for HongKong is 4.164182, for Paris is 4.006737.
@@ -92,21 +94,35 @@ We obtain $p-value < 2.03e-07$ so $p-value < \alpha$. Therefore, we reject the n
 ## Subtask 3
 
 For Employee A: 
+
 Overall estimated average rating: 4.2227 
+
 SE: 0.0125
+
 95% confidence interval: [4.198217, 4.247116]
+
 California estimated average: 4.396533
+
 HongKong estimated average: 4.213475
+
 Paris estimated average: 3.976963
+
 Result of ANOVA: the means are not all equal
 
 For Employee B: 
+
 Overall estimated average rating: 4.2182 
+
 SE: 0.0308
+
 95% confidence interval: [4.157762, 4.278607]
+
 California estimated average: 4.391302
+
 HongKong estimated average: 4.164182
+
 Paris estimated average: 4.006737
+
 Result of ANOVA: the means are not all equal
 
 Let $\bar{y}_A$ be the estimated average for Employee A and $\bar{y}_B$ the estimated average for Employee B.
