@@ -24,14 +24,14 @@ Employee_A_data=read.csv("Employee_A_data.csv", header=TRUE)
 ## Subtask 1:
 
 ```{r test}
-Employee_A_data%>%
-  summarise(n= n(), Mean= mean(Rating),Var=var(Rating))
+knitr::kable(Employee_A_data%>%
+  summarise(n= n(), Mean= mean(Rating),Var=var(Rating)), caption = "Rating Summary Statistics")
 
 strata.b<-Employee_A_data%>% group_by(Branch)%>%
   summarise(ni= n(), Mean= mean(Rating),Var=var(Rating))
-strata.b
+knitr::kable(strata.b, caption = "Ratings Summarized by Branch")
 
-Employee_A_data%>% group_by(continent)%>%summarise(ni= n(), Mean= mean(Rating),Var=sd(Rating)^2)
+knitr::kable(Employee_A_data%>% group_by(continent)%>%summarise(ni= n(), Mean= mean(Rating),Var=sd(Rating)^2), caption = "Rating Summarized by Continent")
 
 ```
 
@@ -85,5 +85,5 @@ denom
 numer=strata.b$Nh*sqrt(strata.b$Var)
 nh=numer*n/denom
 strata.b<-strata.b%>%mutate(nh=round(nh))
-strata.b
+knitr::kable(strata.b, caption= "Ratings Summarized by Strata")
 ```

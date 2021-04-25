@@ -51,18 +51,19 @@ A 95% confidence interval is [`r conf[1]`, `r conf[2]`].
 ### Calculate Mean by Branch
 
 ```{r test}
-Employee_A_data%>%
+rating.summary<-Employee_A_data%>%
   summarise(n= n(), Mean= mean(Rating),Var=sd(Rating)^2)
+knitr::kable(rating.summary, caption = "Rating Summary Statistics")
 
-Employee_A_data%>% group_by(Branch)%>%
+rating.summary.by.branch<-Employee_A_data%>% group_by(Branch)%>%
   summarise(n= n(), Mean= mean(Rating),StD=sd(Rating))
+knitr::kable(rating.summary.by.branch, caption = "Rating Summarised by Branch")
 
 
-# Employee_A_data%>% group_by(continent)%>%summarise(n= n(), Mean= mean(Rating),StD=sd(Rating))
 
 ```
 
-The estimated average rating for California is 4.396533, for HongKong is 4.213475, for Paris is 3.976963.
+The estimated average rating for California is 4.396533, for Hong Kong is 4.213475, for Paris is 3.976963.
 
 ### Hypothesis Test
  

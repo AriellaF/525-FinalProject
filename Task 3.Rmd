@@ -23,16 +23,15 @@ Employee.B.probs=as.matrix(read.csv("Employee_B_probs.csv", header=FALSE))
 
 We add col and row names for human readability. 
 
-```{r test}
-head(Employee.B.Branch)
-head(Employee.B.overall)
-
+```{r}
+knitr::kable(head(Employee.B.Branch))
+knitr::kable(head(Employee.B.overall))
 month<-Employee.B.overall$Year_Month
 
 colnames(Employee.B.probs)<-month
 rownames(Employee.B.probs)<-month
 
-Employee.B.probs
+knitr::kable(Employee.B.probs)
 ```
 
 ## Subtask 1
@@ -62,12 +61,12 @@ A 95% confidence interval is [`r conf[1]`, `r conf[2]`].
 
 ### Calculate Mean by Branch
 
-```{r test}
-Employee.B.Branch%>%
-  summarise(n= n(), Mean= mean(Total_of_Ratings),Var=sd(Total_of_Ratings)^2)
+```{r }
+knitr::kable(Employee.B.Branch%>%
+  summarise(n= n(), Mean= mean(Total_of_Ratings),Var=sd(Total_of_Ratings)^2),caption = "Rating Summary Statistics")
 
-Employee.B.Branch%>% group_by(Branch)%>%
-  summarise(n= n(), Mean= mean(Total_of_Ratings),StD=sd(Total_of_Ratings))
+knitr::kable(Employee.B.Branch%>% group_by(Branch)%>%
+  summarise(n= n(), Mean= mean(Total_of_Ratings),StD=sd(Total_of_Ratings)), caption = "Rating Summarised by Branch")
 ```
 
 The estimated average rating for California is 4.391302, for HongKong is 4.164182, for Paris is 4.006737.
